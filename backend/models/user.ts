@@ -12,7 +12,12 @@ const userSchema = new mongoose.Schema({
     required: true,
     minLength: 4,
   },
-  recipes: [],
+  recipes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Recipe',
+    },
+  ],
 });
 
 userSchema.set('toJSON', {

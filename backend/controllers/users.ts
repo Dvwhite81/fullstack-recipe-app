@@ -6,14 +6,19 @@ import User from '../models/user';
 const usersRouter = Router();
 
 usersRouter.get('/', async (req, res) => {
-  const users = await User.find({});
+  const users = await User
+    .find({})
+    .populate('recipes', { label: 1 });
   res.json(users);
 });
 
 usersRouter.get('/:id', async (req, res) => {
   const user = await User.findById(req.params.id);
   if (user) {
-    res.json(user);
+    res.json({
+      user,
+      recipes: user.recipes,
+    });
   } else {
     res.status(404).end();
   }
@@ -38,22 +43,6 @@ usersRouter.post('/', async (req, res) => {
 usersRouter.delete('/:id', async (req, res) => {
   await User.findByIdAndDelete(req.params.id);
   res.status(204).end();
-});
-
-usersRouter.put('/:id', async (req, res) => {
-  const user = await User.findById(req.params.id);
-  console.log('user:', user);
-
-  if (!user) {
-    return res.status(404).end();
-  }
-
-  const { recipe } = req.body;
-  console.log('recipe:', recipe);
-  user.recipes = user.recipes.concat(recipe);
-
-  const updatedUser = await user.save();
-  res.json(updatedUser);
 });
 
 export default usersRouter;

@@ -6,6 +6,7 @@ import logger from './utils/logger';
 import middleware from './utils/middleware';
 import usersRouter from './controllers/users';
 import loginRouter from './controllers/login';
+import recipesRouter from './controllers/recipes';
 
 const app = express();
 
@@ -23,10 +24,12 @@ mongoose
 app.use(cors());
 app.use(express.static('dist'));
 app.use(express.json());
+// app.use(middleware.tokenExtractor);
 app.use(middleware.requestLogger);
 
 app.use('/api/login', loginRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/recipes', middleware.userExtractor, recipesRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
